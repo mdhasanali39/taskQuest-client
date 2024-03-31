@@ -3,8 +3,15 @@ import { TiDeleteOutline } from "react-icons/ti";
 import { FaRegArrowAltCircleRight } from "react-icons/fa";
 import { RiEditCircleLine } from "react-icons/ri";
 import PropTypes from "prop-types";
+import { useState } from "react";
+import UpdateTask from "../UpdateTask/UpdateTask";
 
-const Task = ({ taskName, taskDescription, taskPriority, status }) => {
+const Task = ({ id, taskName, taskDescription, taskPriority, status,taskDeadline,refetch }) => {
+
+  const [isEditIconClicked,setIsEditIconClicked] = useState(false)
+
+
+
   return (
     <div
       className={`relative w-[95%] mx-auto bg-white shadow-md rounded-lg px-2 py-[6px] mt-3 cursor-grab`}
@@ -18,7 +25,7 @@ const Task = ({ taskName, taskDescription, taskPriority, status }) => {
         {status === "todo" && (
           <div className="flex gap-2 items-center">
             <span
-              // onClick={handleEdit}
+              onClick={()=>setIsEditIconClicked(true)}
               className="flex gap-1 items-center border rounded-lg shadow-sm cursor-pointer px-2 text-sm hover:border-action-text transition ease-linear duration-200"
             >
               <RiEditCircleLine size={16} />
@@ -51,6 +58,10 @@ const Task = ({ taskName, taskDescription, taskPriority, status }) => {
             Delete
           </span>
         )}
+        {/* show update task modal here  */}
+        {
+          isEditIconClicked && <UpdateTask id={id} setIsEditIconClicked={setIsEditIconClicked} taskName={taskName} taskDescription={taskDescription} taskPriority={taskPriority} taskDeadline={taskDeadline} refetch={refetch} />
+        }
       </div>
     </div>
   );
@@ -61,6 +72,10 @@ Task.propTypes = {
   taskDescription: PropTypes.string,
   taskPriority: PropTypes.string,
   status: PropTypes.string,
+  taskDeadline: PropTypes.string,
+  id: PropTypes.string,
+  refetch: PropTypes.func,
+
 }
 
 export default Task;

@@ -6,19 +6,19 @@ import useAuth from "../../hooks/useAuth";
 const TaskManagement = () => {
   const {user} = useAuth()
 
-  const {data:tasks = []} = useQuery({
+  const {data:tasks = [],refetch} = useQuery({
     queryKey:["tasks",],
     queryFn: async()=>{
       const data = await getTasks(user)
       return data;
     }
   })
-  console.log(tasks);
+
   return (
     <div className="min-h-[86vh]">
       <div className="relative w-full grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-4">
         {/* todo lists  */}
-        <TaskCard sectionName="Todo" isCreateTask={true} tasks={tasks?.todo} />
+        <TaskCard sectionName="Todo" isCreateTask={true} tasks={tasks?.todo} refetch={refetch} />
         {/* onGoing lists  */}
         <TaskCard sectionName="OnGoing" tasks={tasks?.ongoing} />
         {/* completed lists  */}

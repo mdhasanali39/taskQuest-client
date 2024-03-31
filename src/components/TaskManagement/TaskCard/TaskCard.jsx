@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import CreateTask from "../CreateTask/CreateTask";
 
-const TaskCard = ({ sectionName, isCreateTask,tasks}) => {
+const TaskCard = ({ sectionName, isCreateTask,tasks,refetch}) => {
   const [isMouseEntered, setIsMouseEntered] = useState(false);
   const [isAddIconClicked, setIsAddIconClicked] = useState(false);
   return (
@@ -16,7 +16,7 @@ const TaskCard = ({ sectionName, isCreateTask,tasks}) => {
       >
         {/* show tasks  */}
         {
-          tasks?.length > 0 && tasks.map(task => <Task key={task._id} taskName={task.taskName} taskDescription={task.taskDescription} taskPriority={task.priority} status={task.status} />)
+          tasks?.length > 0 && tasks.map(task => <Task key={task._id} id={task._id} taskName={task.taskName} taskDescription={task.taskDescription} taskPriority={task.priority} status={task.status} taskDeadline={task.taskDeadline} refetch={refetch} />)
         }
         
 
@@ -39,7 +39,7 @@ const TaskCard = ({ sectionName, isCreateTask,tasks}) => {
           </div>
         )}
         {
-            isAddIconClicked && <CreateTask setIsAddIconClicked={setIsAddIconClicked}/>
+            isAddIconClicked && <CreateTask setIsAddIconClicked={setIsAddIconClicked} refetch={refetch}/>
         }
       </div>
     </div>
@@ -50,6 +50,7 @@ TaskCard.propTypes = {
   sectionName: PropTypes.string.isRequired,
   isCreateTask: PropTypes.bool,
   tasks: PropTypes.array,
+  refetch: PropTypes.func,
 };
 
 export default TaskCard;

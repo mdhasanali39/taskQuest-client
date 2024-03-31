@@ -1,12 +1,10 @@
-import { IoIosCloseCircleOutline } from "react-icons/io";
 import { useForm } from "react-hook-form";
+import { IoIosCloseCircleOutline } from "react-icons/io";
 import PropTypes from "prop-types";
-import { createTask } from "../../../api/crud";
-import useAuth from "../../../hooks/useAuth";
+import { updateTask } from "../../../api/crud";
 import toast from "react-hot-toast";
 
-const CreateTask = ({ setIsAddIconClicked,refetch }) => {
-  const { user } = useAuth();
+const UpdateTask = ({id,setIsEditIconClicked,taskName,taskDescription,taskPriority,taskDeadline,refetch }) => {
   const {
     register,
     handleSubmit,
@@ -15,15 +13,11 @@ const CreateTask = ({ setIsAddIconClicked,refetch }) => {
 
   const onSubmit = async (data) => {
     try {
-      const result = await createTask({
-        ...data,
-        status: "todo",
-        userEmail: user?.email,
-      });
-      if (result?.acknowledge) {
-        setIsAddIconClicked(false);
-        refetch()
-        toast.success("Your task added successfully");
+      const result = await updateTask(id,data)
+      if (result?.status) {
+          setIsEditIconClicked(false);
+          refetch()
+        toast.success("Your updated successfully");
       }
     } catch (err) {
       console.log(err.message);
@@ -38,6 +32,7 @@ const CreateTask = ({ setIsAddIconClicked,refetch }) => {
           type="text"
           placeholder="Task Name"
           {...register("taskName")}
+          defaultValue={taskName}
           required
           className="px-2 py-2 outline-none border rounded-md"
         />
@@ -46,11 +41,12 @@ const CreateTask = ({ setIsAddIconClicked,refetch }) => {
         <input
           type="datetime-local"
           {...register("taskDeadline")}
+          defaultValue={taskDeadline}
           required
           className="px-2 py-2 outline-none border rounded-md"
         />
         {/* task priority */}
-        <select {...register("priority")}>
+        <select {...register("priority")} defaultValue={taskPriority}>
           <option>Select Priority</option>
           <option value="high">High</option>
           <option value="moderate">Moderate</option>
@@ -61,6 +57,7 @@ const CreateTask = ({ setIsAddIconClicked,refetch }) => {
           type="text"
           placeholder="Task Description"
           {...register("taskDescription")}
+          defaultValue={taskDescription}
           className="px-2 py-2 outline-none border rounded-md"
         ></textarea>
         <div className="text-center py-4">
@@ -68,21 +65,27 @@ const CreateTask = ({ setIsAddIconClicked,refetch }) => {
             type="submit"
             className="text-lg text-white font-semibold px-5 py-1 rounded-lg bg-action-bg border hover:bg-white hover:text-black hover:border-action-text transition ease-linear duration-300"
           >
-            Create
+            Update
           </button>
         </div>
       </form>
       <IoIosCloseCircleOutline
-        onClick={() => setIsAddIconClicked(false)}
+        onClick={() => setIsEditIconClicked(false)}
         size={28}
         className="absolute top-1 right-1"
       />
     </div>
   );
 };
-CreateTask.propTypes = {
-  setIsAddIconClicked: PropTypes.func,
-  refetch: PropTypes.func,
-}
+UpdateTask.propTypes = {
+    setIsEditIconClicked: PropTypes.func,
+    taskName: PropTypes.string,
+    taskDescription: PropTypes.string,
+    taskPriority: PropTypes.string,
+    status: PropTypes.string,
+    taskDeadline: PropTypes.string,
+    id: PropTypes.string,
+    refetch: PropTypes.func,
+  }
 
-export default CreateTask;
+export default UpdateTask;

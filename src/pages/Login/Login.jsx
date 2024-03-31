@@ -1,9 +1,11 @@
+/* eslint-disable react/no-unescaped-entities */
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 const Login = () => {
-    // const { signIn, signInWithGoogle } = useAuth();
+    const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
@@ -11,45 +13,39 @@ const Login = () => {
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email,password)
     
     // create user
-    // signIn(email, password)
-    //   .then((result) => {
-    //     if (result.user.email) {
-    //       toast.success("Your login successful");
-    //       navigate("/",{replace:true});
-    //     }
-    //     console.log(result.user);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err.message);
-    //     if (
-    //       err.message === "Firebase: Error (auth/invalid-login-credentials)."
-    //     ) {
-    //       toast.error("email or password does not matched");
-    //       return;
-    //     }
-    //     toast.error(err.message.split(" ")[2].split("/")[1].slice(0, -2));
-    //   });
+    signIn(email, password)
+      .then((result) => {
+        if (result.user.email) {
+          toast.success("Your login successful");
+          navigate("/",{replace:true});
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        if (
+          err.message === "Firebase: Error (auth/invalid-login-credentials)."
+        ) {
+          toast.error("email or password does not matched");
+          
+        }
+        toast.error(err.message.split(" ")[2].split("/")[1].slice(0, -2));
+      });
   };
 
   // easy login with google
   const handleGoogleLogin = async () => {
-    // try {
-    //   const result = await signInWithGoogle();
-    //   console.log(result.user);
+    try {
+      const result = await signInWithGoogle();
 
-    //   if (result?.user?.email) {
-    //     toast.success("Login with google Successful");
-    //     navigate("/", { replace: true });
-    //     // save user if new user
-    //     //   const acknowledge = await saveUser(result?.user);
-    //     // console.log(acknowledge);
-    //   }
-    // } catch (err) {
-    //   console.error(err.message);
-    // }
+      if (result?.user?.email) {
+        toast.success("Login with google Successful");
+        navigate("/", { replace: true });
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   return (

@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.28.9",
+    "axios": "^1.6.8",
     "firebase": "^10.10.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
@@ -25,6 +27,7 @@
     "sort-by": "^1.2.0"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.28.6",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",

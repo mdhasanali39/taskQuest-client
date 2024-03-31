@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import CreateTask from "../CreateTask/CreateTask";
 
-const TaskCard = ({ sectionName, isCreateTask }) => {
+const TaskCard = ({ sectionName, isCreateTask,tasks}) => {
   const [isMouseEntered, setIsMouseEntered] = useState(false);
   const [isAddIconClicked, setIsAddIconClicked] = useState(false);
   return (
@@ -15,8 +15,10 @@ const TaskCard = ({ sectionName, isCreateTask }) => {
         `}
       >
         {/* show tasks  */}
-
-        <Task />
+        {
+          tasks?.length > 0 && tasks.map(task => <Task key={task._id} taskName={task.taskName} taskDescription={task.taskDescription} taskPriority={task.priority} status={task.status} />)
+        }
+        
 
         {isCreateTask && (
           <div className="px-2 py-1  w-min whitespace-nowrap rounded-lg  font-bold absolute bottom-2 right-2">
@@ -46,7 +48,8 @@ const TaskCard = ({ sectionName, isCreateTask }) => {
 
 TaskCard.propTypes = {
   sectionName: PropTypes.string.isRequired,
-  isCreateTask: PropTypes.bool.isRequired,
+  isCreateTask: PropTypes.bool,
+  tasks: PropTypes.array,
 };
 
 export default TaskCard;

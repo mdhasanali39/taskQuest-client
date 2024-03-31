@@ -1,15 +1,29 @@
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import {useForm} from 'react-hook-form'
+import { createTask } from "../../../api/crud";
+import useAuth from "../../../hooks/useAuth";
+import toast from 'react-hot-toast'
 
 const CreateTask = ({setIsAddIconClicked}) => {
-
+  const {user} = useAuth()
     const {
         register,
         handleSubmit,
         formState: { errors },
       } = useForm()
+      
     
-      const onSubmit = (data) => console.log(data)
+      const onSubmit = async(data) => {
+        try {
+            const result = await createTask({...data, status:"todo", userEmail:user?.email}) 
+          if(result?.acknowledge){
+            setIsAddIconClicked(false)
+            toast.success("Your task added successfully")
+          }
+        } catch (err) {
+          console.log(err.message);
+        }
+      }
 
     return (
         <div className=" w-3/4 lg:w-1/4 bg-white mt-1 p-4 pt-12 fixed z-[100] shadow-xl rounded-lg border-t-[5px] border-t-action-text left-1/2 -translate-x-1/2 bottom-1/2 translate-y-1/2">
@@ -27,7 +41,7 @@ const CreateTask = ({setIsAddIconClicked}) => {
         
         {/* task deadline */}
         <input
-          type="datetime-local"
+          type="date"
           {...register("taskDeadline")}
           required
           className="px-2 py-2 outline-none border rounded-md"

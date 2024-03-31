@@ -5,11 +5,45 @@ import { RiEditCircleLine } from "react-icons/ri";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import UpdateTask from "../UpdateTask/UpdateTask";
+import { deleteTask, updateTaskStatus } from "../../../api/crud";
+import toast from "react-hot-toast";
 
 const Task = ({ id, taskName, taskDescription, taskPriority, status,taskDeadline,refetch }) => {
 
   const [isEditIconClicked,setIsEditIconClicked] = useState(false)
 
+  // handle ongoing - make task status to ongoing 
+  const handleOngoing = async() =>{
+    try {
+      const result = await updateTaskStatus(id,{status:"ongoing"})
+      if(result?.status){
+        toast.success(`Status has changed to ongoing`)
+        refetch()
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  const handleComplete = async() =>{
+    try {
+      if(!refetch) return;
+      const result = await updateTaskStatus(id,{status:"completed"})
+      if(result?.status){
+        toast.success(`Status has changed to completed`)
+        refetch()
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  // delete task 
+  const handleDelete = async() =>{
+    const result = await deleteTask(id)
+    if(result?.acknowledge?.deletedCount > 0){
+      toast.success("Your task deleted successfully");
+      refetch()
+    }
+  }
 
 
   return (
@@ -32,7 +66,7 @@ const Task = ({ id, taskName, taskDescription, taskPriority, status,taskDeadline
               Edit
             </span>
             <span
-              // onClick={handleOngoing}
+              onClick={handleOngoing}
               className="flex gap-1 items-center border rounded-lg shadow-sm cursor-pointer px-2 text-sm hover:border-action-text transition ease-linear duration-200"
             >
               <FaRegArrowAltCircleRight size={16} />
@@ -42,7 +76,7 @@ const Task = ({ id, taskName, taskDescription, taskPriority, status,taskDeadline
         )}
         {status === "ongoing" && (
           <span
-            // onClick={handleComplete}
+            onClick={handleComplete}
             className="flex gap-1 items-center border rounded-lg shadow-sm cursor-pointer px-2 text-sm hover:border-action-text transition ease-linear duration-200"
           >
             <FaRegCircleCheck size={16} />
@@ -51,10 +85,10 @@ const Task = ({ id, taskName, taskDescription, taskPriority, status,taskDeadline
         )}
         {status === "completed" && (
           <span
-            // onClick={handleDelete}
+            onClick={handleDelete}
             className="flex gap-1 items-center border text-red-500 rounded-lg shadow-sm cursor-pointer px-2 hover:border-red-700 transition ease-linear duration-200 text-sm"
           >
-            <TiDeleteOutline size={16} className="" />
+            <TiDeleteOutline size={18} className="" />
             Delete
           </span>
         )}
@@ -75,7 +109,6 @@ Task.propTypes = {
   taskDeadline: PropTypes.string,
   id: PropTypes.string,
   refetch: PropTypes.func,
-
 }
 
 export default Task;

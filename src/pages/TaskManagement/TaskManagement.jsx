@@ -20,9 +20,9 @@ const TaskManagement = () => {
         {/* todo lists  */}
         <TaskCard sectionName="Todo" isCreateTask={true} tasks={tasks?.todo} refetch={refetch} />
         {/* onGoing lists  */}
-        <TaskCard sectionName="OnGoing" tasks={tasks?.ongoing} />
+        <TaskCard sectionName="OnGoing" tasks={tasks?.ongoing} refetch={refetch} />
         {/* completed lists  */}
-        <TaskCard sectionName="Completed" tasks={tasks?.completed} />
+        <TaskCard sectionName="Completed" tasks={tasks?.completed} refetch={refetch} />
       </div>
     </div>
   );

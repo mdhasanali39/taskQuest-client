@@ -1,7 +1,11 @@
+import { BiLogOut } from "react-icons/bi";
 import { Link, NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
+import useAuth from "../../hooks/useAuth";
 
 const NavItems = ({ handleItemClick, active, setActive, handleLogOut }) => {
+
+  const {user} = useAuth()
 
     const classesForTransition = "transition ease-linear duration-[250]"
 
@@ -33,9 +37,9 @@ const NavItems = ({ handleItemClick, active, setActive, handleLogOut }) => {
           Manage Task
         </NavLink>
       </li>
-      {/* { */}
-      {/* user ? ( */}
-      {/* <li>
+      {
+      user ? (
+      <li>
           <div className="flex lg:block pr-4">
             <div className="relative left-1/2 max-[1023.9px]:-translate-x-1/2">
               <div onClick={() => setActive(!active)}>
@@ -68,8 +72,8 @@ const NavItems = ({ handleItemClick, active, setActive, handleLogOut }) => {
               </div>
             </div>
           </div>
-        </li> */}
-      {/* ) : ( */}
+        </li>
+      ) : (
       <li>
         <Link to={"/login"}>
           <button
@@ -80,7 +84,7 @@ const NavItems = ({ handleItemClick, active, setActive, handleLogOut }) => {
           </button>
         </Link>
       </li>
-      {/* )} */}
+      )}
     </>
   );
 };
@@ -89,6 +93,7 @@ NavItems.propTypes = {
   handleItemClick: PropTypes.func,
   active: PropTypes.bool,
   setActive: PropTypes.func,
+  handleLogOut: PropTypes.func,
 };
 
 export default NavItems;

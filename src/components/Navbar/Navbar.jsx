@@ -3,13 +3,14 @@ import { FaBars } from "react-icons/fa6";
 import { AiOutlineClose } from "react-icons/ai";
 import toast from 'react-hot-toast';
 import NavItems from "./NavItems";
+import useAuth from "../../hooks/useAuth";
 
 const Navbar = () => {
   const [menuActive, setMenuActive] = useState(false);
   const [isItemClicked, setIsItemClicked] = useState(false);
   const [active, setActive] = useState(false);
 
-  //   const {logOut} = useAuth()
+    const {logOut} = useAuth()
 
   // handle item click
   const handleItemClick = () => {
@@ -18,15 +19,15 @@ const Navbar = () => {
   };
 
   // handle log-out
-  //   const handleLogOut = () => {
-  //     logOut()
-  //       .then(() => {
-  //         toast.success("Log out successful");
-  //       })
-  //       .catch((err) => {
-  //         console.error(err);
-  //       });
-  //   };
+    const handleLogOut = () => {
+      logOut()
+        .then(() => {
+          toast.success("Log out successful");
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
 
   // handle open menu
   const handleMenuOpen = () => {
@@ -79,7 +80,7 @@ const Navbar = () => {
           handleItemClick={handleItemClick}
           active={active}
           setActive={setActive}
-        //   handleLogOut={handleLogOut}
+          handleLogOut={handleLogOut}
         ></NavItems>
       </ul>
       {/* for large device  */}
@@ -88,7 +89,7 @@ const Navbar = () => {
           handleItemClick={handleItemClick}
           active={active}
           setActive={setActive}
-        //   handleLogOut={handleLogOut}
+          handleLogOut={handleLogOut}
         ></NavItems>
       </ul>
     </nav>

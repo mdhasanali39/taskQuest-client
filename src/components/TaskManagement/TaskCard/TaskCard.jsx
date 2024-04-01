@@ -1,12 +1,73 @@
 import { IoMdAddCircleOutline } from "react-icons/io";
+import {
+  MdKeyboardDoubleArrowLeft,
+  MdKeyboardDoubleArrowRight,
+} from "react-icons/md";
 import Task from "./Task";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateTask from "../CreateTask/CreateTask";
 
-const TaskCard = ({ sectionName, isCreateTask, tasks, refetch }) => {
+const TaskCard = ({
+  sectionName,
+  isCreateTask,
+  tasks,
+  totalTasks,
+  refetch,
+  pageSize,
+  currentPage,
+  setCurrentPage,
+  setTaskStatus,
+  taskStatus
+}) => {
+  // const [currentSectionName, setCurrentSectionName] = useState('')
   const [isMouseEntered, setIsMouseEntered] = useState(false);
   const [isAddIconClicked, setIsAddIconClicked] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(totalTasks / pageSize));
+  }, [pageSize, totalTasks]);
+
+  // change page number dynamically
+  const changePageNumber = (pageNumber) => {
+
+    setTaskStatus(taskStatus);
+    setCurrentPage(pageNumber);
+  };
+
+  // get page number buttons
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(
+        <button
+          key={i}
+          onClick={()=>changePageNumber(i)}
+          disabled={i === currentPage}
+          className={`px-2 bg-blue-400 text-white mr-1 rounded-md ${i === currentPage && "bg-blue-500"}`}
+        >
+          {i}
+        </button>
+      );
+    }
+    return pageNumbers;
+  };
+
+  // handle prev page
+  const handlePrev = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+
+    setTaskStatus(taskStatus);
+    };
+    // handle next page
+    const handleNext = () => {
+      setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+
+    setTaskStatus(taskStatus);
+  };
+
+
   return (
     <div>
       <h3 className="text-xl text-gray-600 font-bold my-4">{sectionName}</h3>
@@ -29,17 +90,27 @@ const TaskCard = ({ sectionName, isCreateTask, tasks, refetch }) => {
             />
           ))}
 
+        {/* show pagination  */}
+        <div className="mt-6 flex justify-center">
+          <button onClick={()=>handlePrev()} disabled={currentPage === 1} className="mr-2 disabled:text-gray-400">
+            <MdKeyboardDoubleArrowLeft size={22} />
+          </button>
+          {renderPageNumbers()}
+          <button onClick={()=>handleNext()} disabled={currentPage === totalPages} className="ml-2 disabled:text-gray-400">
+            <MdKeyboardDoubleArrowRight  size={22}/>
+          </button>
+        </div>
+
         {isCreateTask && (
           <div className="px-2 py-1  w-min whitespace-nowrap rounded-lg  font-bold absolute bottom-2 right-2">
-            <span 
-            onClick={() => setIsAddIconClicked(true)}
+            <span
+              onClick={() => setIsAddIconClicked(true)}
               onMouseEnter={() => setIsMouseEntered(true)}
               onMouseLeave={() => setIsMouseEntered(false)}
-            className="flex items-center gap-1 text-sm text-blue-600 cursor-pointer">
-            New Task
-            <IoMdAddCircleOutline
-              size={20}/>
-            
+              className="flex items-center gap-1 text-sm text-blue-600 cursor-pointer"
+            >
+              New Task
+              <IoMdAddCircleOutline size={20} />
             </span>
             <span
               className={`
@@ -67,6 +138,12 @@ TaskCard.propTypes = {
   isCreateTask: PropTypes.bool,
   tasks: PropTypes.array,
   refetch: PropTypes.func,
+  pageSize: PropTypes.number,
+  currentPage: PropTypes.number,
+  setCurrentPage: PropTypes.func,
+  setTaskStatus: PropTypes.func,
+  taskStatus: PropTypes.string,
+  totalTasks: PropTypes.number,
 };
 
 export default TaskCard;

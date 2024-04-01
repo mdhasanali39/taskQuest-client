@@ -6,10 +6,11 @@ export const createTask = async(taskInfo) => {
     return data; 
 }
 // get tasks - user specific
-export const getTasks = async(user) => {
-    const {data} = await axios.get(`http://localhost:5000/task-quest/get-all/${user?.email}`);
+export const getTasks = async(user,currentPage,pageSize,taskStatus) => {
+    const {data} = await axios.get(`http://localhost:5000/task-quest/get-all/${user?.email}?currentPage=${currentPage}&pageSize=${pageSize}&taskStatus=${taskStatus}`);
     return data?.tasks; 
 }
+
 // update task
 export const updateTask = async(id,updateTaskInfo) => {
     const {data} = await axios.put(`http://localhost:5000/task-quest/update-task/${id}`,updateTaskInfo);

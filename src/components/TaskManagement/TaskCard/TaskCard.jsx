@@ -24,6 +24,25 @@ const TaskCard = ({
   const [isMouseEntered, setIsMouseEntered] = useState(false);
   const [isAddIconClicked, setIsAddIconClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
+  const [isScrolling,setIsScrolling] = useState(false)
+
+
+  useEffect(()=>{
+    const handleScroll = () =>{
+      const scrollTop = window.scrollY || document.documentElement.scrollTop
+      if(scrollTop > 53){
+        setIsScrolling(true)
+      }else{
+        setIsScrolling(false)
+      }
+    }
+
+    window.addEventListener("scroll",handleScroll)
+
+    return ()=>{
+      window.removeEventListener("scroll",handleScroll)
+    }
+  },[])
 
   useEffect(() => {
     setTotalPages(Math.ceil(totalTasks / pageSize));
@@ -70,13 +89,13 @@ const TaskCard = ({
 
   return (
     <div>
-      <h3 className="text-xl text-gray-600 font-bold my-4">{sectionName}</h3>
+      <h3 className={`text-xl text-gray-500 pl-1 font-bold my-4 sticky top-[53px] z-[900] ${isScrolling && "bg-gray-500 text-white"} transition duration-200`}>{sectionName}</h3>
       <div
         className={`relative min-h-[200px] bg-primary-bg rounded-lg shadow-xl border border-action-text border-opacity-10 pb-14
         `}
       >
         {/* show tasks  */}
-        {tasks?.length > 0 &&
+        {tasks?.length > 0 ?
           tasks.map((task) => (
             <Task
               key={task._id}
@@ -88,10 +107,12 @@ const TaskCard = ({
               taskDeadline={task.taskDeadline}
               refetch={refetch}
             />
-          ))}
+          )):<div className="w-[95%] mx-auto bg-white shadow-md rounded-lg px-2 py-[6px] mt-3">
+            You don't have {sectionName} tasks!
+          </div>}
 
         {/* show pagination  */}
-        <div className="mt-6 flex justify-center">
+        {totalPages >1 && <div className="mt-6 flex justify-center">
           <button onClick={()=>handlePrev()} disabled={currentPage === 1} className="mr-2 disabled:text-gray-400">
             <MdKeyboardDoubleArrowLeft size={22} />
           </button>
@@ -99,7 +120,7 @@ const TaskCard = ({
           <button onClick={()=>handleNext()} disabled={currentPage === totalPages} className="ml-2 disabled:text-gray-400">
             <MdKeyboardDoubleArrowRight  size={22}/>
           </button>
-        </div>
+        </div>}
 
         {isCreateTask && (
           <div className="px-2 py-1  w-min whitespace-nowrap rounded-lg  font-bold absolute bottom-2 right-2">

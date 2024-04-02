@@ -48,7 +48,7 @@ const Task = ({ id, taskName, taskDescription, taskPriority, status,taskDeadline
 
   return (
     <div
-      className={`relative w-[95%] mx-auto bg-white shadow-md rounded-lg px-2 py-[6px] mt-3 cursor-grab`}
+      className={`relative w-[95%] mx-auto bg-white shadow-md rounded-lg px-2 py-[6px] mt-3`}
     >
       <h3 className="font-semibold text-gray-600">{taskName}</h3>
       <p className="text-sm">{taskDescription}</p>

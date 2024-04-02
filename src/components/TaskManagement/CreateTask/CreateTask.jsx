@@ -14,6 +14,12 @@ const CreateTask = ({ setIsAddIconClicked,refetch }) => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    // check if priority is not selected 
+    if(data?.priority === "Select Priority"){
+      toast.error("Please select task priority");
+      return;
+    }
+    
     try {
       const result = await createTask({
         ...data,
@@ -37,32 +43,37 @@ const CreateTask = ({ setIsAddIconClicked,refetch }) => {
         <input
           type="text"
           placeholder="Task Name"
-          {...register("taskName")}
-          required
+          {...register("taskName",{required:true})}
           className="px-2 py-2 outline-none border rounded-md"
         />
-
+          {/* errors will return when field validation fails  */}
+      {errors.taskName && <span className="text-red-500 font-medium">Please insert task name </span>}
         {/* task deadline */}
         <input
-          type="datetime-local"
-          {...register("taskDeadline")}
-          required
+          type="date"
+          {...register("taskDeadline",{required:true})}
           className="px-2 py-2 outline-none border rounded-md"
         />
+        {/* errors will return when field validation fails  */}
+      {errors.taskDeadline && <span className="text-red-500 font-medium">Please select date</span>}
+
         {/* task priority */}
-        <select {...register("priority")}>
-          <option>Select Priority</option>
+        <select {...register("priority",{required:true}) } defaultValue="Select Priority">
+          <option disabled>Select Priority</option>
           <option value="high">High</option>
           <option value="moderate">Moderate</option>
           <option value="low">Low</option>
         </select>
+
         {/* task description */}
         <textarea
           type="text"
           placeholder="Task Description"
-          {...register("taskDescription")}
+          {...register("taskDescription", {required:true})}
           className="px-2 py-2 outline-none border rounded-md"
         ></textarea>
+        {/* errors will return when field validation fails  */}
+      {errors.taskDescription && <span className="text-red-500 font-medium">Please insert task description</span>}
         <div className="text-center py-4">
           <button
             type="submit"

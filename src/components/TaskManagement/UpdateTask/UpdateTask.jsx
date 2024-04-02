@@ -4,7 +4,15 @@ import PropTypes from "prop-types";
 import { updateTask } from "../../../api/crud";
 import toast from "react-hot-toast";
 
-const UpdateTask = ({id,setIsEditIconClicked,taskName,taskDescription,taskPriority,taskDeadline,refetch }) => {
+const UpdateTask = ({
+  id,
+  setIsEditIconClicked,
+  taskName,
+  taskDescription,
+  taskPriority,
+  taskDeadline,
+  refetch,
+}) => {
   const {
     register,
     handleSubmit,
@@ -13,11 +21,11 @@ const UpdateTask = ({id,setIsEditIconClicked,taskName,taskDescription,taskPriori
 
   const onSubmit = async (data) => {
     try {
-      const result = await updateTask(id,data)
+      const result = await updateTask(id, data);
       if (result?.status) {
-          setIsEditIconClicked(false);
-          refetch()
-        toast.success("Your updated successfully");
+        setIsEditIconClicked(false);
+        refetch();
+        toast.success("Your task updated successfully");
       }
     } catch (err) {
       console.log(err.message);
@@ -31,23 +39,37 @@ const UpdateTask = ({id,setIsEditIconClicked,taskName,taskDescription,taskPriori
         <input
           type="text"
           placeholder="Task Name"
-          {...register("taskName")}
+          {...register("taskName", { required: true })}
           defaultValue={taskName}
           required
           className="px-2 py-2 outline-none border rounded-md"
         />
+        {/* errors will return when field validation fails  */}
+        {errors.taskName && (
+          <span className="text-red-500 font-medium">
+            Please insert task name{" "}
+          </span>
+        )}
 
         {/* task deadline */}
         <input
-          type="datetime-local"
-          {...register("taskDeadline")}
+          type="date"
+          {...register("taskDeadline", { required: true })}
           defaultValue={taskDeadline}
           required
           className="px-2 py-2 outline-none border rounded-md"
         />
+        {/* errors will return when field validation fails  */}
+        {errors.taskDeadline && (
+          <span className="text-red-500 font-medium">Please select date</span>
+        )}
+
         {/* task priority */}
-        <select {...register("priority")} defaultValue={taskPriority}>
-          <option>Select Priority</option>
+        <select
+          {...register("priority", { required: true })}
+          defaultValue={taskPriority}
+        >
+          <option disabled>Select Priority</option>
           <option value="high">High</option>
           <option value="moderate">Moderate</option>
           <option value="low">Low</option>
@@ -56,10 +78,17 @@ const UpdateTask = ({id,setIsEditIconClicked,taskName,taskDescription,taskPriori
         <textarea
           type="text"
           placeholder="Task Description"
-          {...register("taskDescription")}
+          {...register("taskDescription", { required: true })}
           defaultValue={taskDescription}
           className="px-2 py-2 outline-none border rounded-md"
         ></textarea>
+        {/* errors will return when field validation fails  */}
+        {errors.taskDescription && (
+          <span className="text-red-500 font-medium">
+            Please insert task description
+          </span>
+        )}
+
         <div className="text-center py-4">
           <button
             type="submit"
@@ -78,14 +107,14 @@ const UpdateTask = ({id,setIsEditIconClicked,taskName,taskDescription,taskPriori
   );
 };
 UpdateTask.propTypes = {
-    setIsEditIconClicked: PropTypes.func,
-    taskName: PropTypes.string,
-    taskDescription: PropTypes.string,
-    taskPriority: PropTypes.string,
-    status: PropTypes.string,
-    taskDeadline: PropTypes.string,
-    id: PropTypes.string,
-    refetch: PropTypes.func,
-  }
+  setIsEditIconClicked: PropTypes.func,
+  taskName: PropTypes.string,
+  taskDescription: PropTypes.string,
+  taskPriority: PropTypes.string,
+  status: PropTypes.string,
+  taskDeadline: PropTypes.string,
+  id: PropTypes.string,
+  refetch: PropTypes.func,
+};
 
 export default UpdateTask;

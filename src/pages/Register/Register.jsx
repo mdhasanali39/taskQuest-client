@@ -3,6 +3,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import { accessToken } from "../../api/auth";
 
 const Register = () => {
   const {createUser,signInWithGoogle,updateUserProfile} = useAuth()
@@ -40,6 +41,7 @@ const Register = () => {
       console.log(result?.user);
       
       if(result?.user?.email){
+        await accessToken(result.user.email)
         toast.success("Account created successfully");
         navigate('/', {replace:true})
         window.location.reload()
@@ -56,6 +58,7 @@ const Register = () => {
     try {
       const result = await signInWithGoogle();
       if(result?.user?.email){
+        await accessToken(result?.user?.email)
         toast.success("Login with google Successful")
         navigate('/', {replace:true})
       }

@@ -3,6 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import { accessToken } from "../../api/auth";
 
 const Login = () => {
     const { signIn, signInWithGoogle } = useAuth();
@@ -16,8 +17,9 @@ const Login = () => {
     
     // create user
     signIn(email, password)
-      .then((result) => {
+      .then(async(result) => {
         if (result.user.email) {
+          await accessToken(result.user.email)
           toast.success("Your login successful");
           navigate("/",{replace:true});
         }
@@ -38,8 +40,8 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithGoogle();
-
       if (result?.user?.email) {
+        await accessToken(result?.user?.email)
         toast.success("Login with google Successful");
         navigate("/", { replace: true });
       }

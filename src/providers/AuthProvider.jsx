@@ -10,6 +10,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import auth from "../config/firebase.config";
+import { clearCookie } from "../api/auth";
 
 export const AuthContext = createContext(null);
 // create google provider instance
@@ -38,23 +39,25 @@ const AuthProvider = ({ children }) => {
   };
 
   // update user profile func
-  const updateUserProfile = (name,photo) => {
+  const updateUserProfile = (name, photo) => {
     setIsLoading(true);
-    return updateProfile(auth.currentUser,{
-        displayName: name, photoURL: photo
+    return updateProfile(auth.currentUser, {
+      displayName: name,
+      photoURL: photo,
     });
   };
   // sign out user func
-  const logOut = () => {
+  const logOut = async() => {
     setIsLoading(true);
+    await clearCookie()
     return signOut(auth);
   };
 
   //   observer
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      // const userEmail = currentUser?.email || user?.email;
       setUser(currentUser);
-      console.log("CurrentUser-->", currentUser);
       setIsLoading(false);
     });
     return () => {

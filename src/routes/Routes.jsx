@@ -4,6 +4,7 @@ import Home from "../pages/Home/Home";
 import TaskManagement from "../pages/TaskManagement/TaskManagement";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
+import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
     {
@@ -17,7 +18,9 @@ export const router = createBrowserRouter([
             },
             {
                 path:'task-management',
-                element: <TaskManagement/>
+                element: <PrivateRoute>
+                    <TaskManagement/>
+                </PrivateRoute>
             },
             {
                 path:'login',

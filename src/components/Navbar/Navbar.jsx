@@ -4,14 +4,15 @@ import { AiOutlineClose } from "react-icons/ai";
 import toast from 'react-hot-toast';
 import NavItems from "./NavItems";
 import useAuth from "../../hooks/useAuth";
+import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [menuActive, setMenuActive] = useState(false);
   const [isItemClicked, setIsItemClicked] = useState(false);
   const [active, setActive] = useState(false);
-
-    const {logOut} = useAuth()
-
+  const {logOut} = useAuth()
+  const location = useLocation()
+;
   // handle item click
   const handleItemClick = () => {
     setIsItemClicked(true);
@@ -37,12 +38,11 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`flex justify-between items-center bg-white sticky top-0 z-[999] px-4 py-6`}
+      className={`flex justify-between items-center bg-white sticky top-0 z-[1000] px-4 transition duration-200 ${location.pathname === '/task-management'? "py-1":"py-4"}`}
     >
       {/* logo  */}
       <div>
         <img
-          className=""
           src="https://i.ibb.co/2ZVtCc5/1.png"
           alt="task quest logo"
         />

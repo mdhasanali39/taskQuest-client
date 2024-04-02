@@ -51,7 +51,7 @@ const NavItems = ({ handleItemClick, active, setActive, handleLogOut }) => {
               <div
                 className={`${
                   active ? "block" : "hidden"
-                } absolute max-[1023.9px]:left-1/2 max-[1023.9px]:-translate-x-1/2 max-[1023.9px]:-top-[170px] z-50 lg:right-[5%] min-w-max border border-action-primary-clr bg-white p-4 rounded-md`}
+                } absolute max-[1023.9px]:left-1/2 max-[1023.9px]:-translate-x-1/2 max-[1023.9px]:-top-[170px] z-[1200] lg:right-[5%] min-w-max border border-action-primary-clr bg-white p-4 rounded-md`}
               >
                 <div onClick={() => setActive(!active)}>
                   <img
@@ -62,7 +62,7 @@ const NavItems = ({ handleItemClick, active, setActive, handleLogOut }) => {
                 <h3 className="text-center">{user?.displayName}</h3>
                 <button
                   onClick={handleLogOut}
-                  className={`flex gap-1 items-center text-lg text-white font-semibold px-4 py-1 rounded-lg bg-action-bg border hover:bg-white hover:text-action-text hover:border-action-text ${classesForTransition}`}
+                  className={`flex gap-1 items-center text-base text-action-text font-semibold px-4 py-1 rounded-lg border border-white hover:border-action-text ${classesForTransition}`}
                 >
                   <span>
                     <BiLogOut />

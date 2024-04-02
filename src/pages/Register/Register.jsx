@@ -4,40 +4,35 @@ import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { accessToken } from "../../api/auth";
+import  {useForm} from 'react-hook-form'
+import { IoMdRefresh } from "react-icons/io";
+import { FaCamera } from "react-icons/fa6";
+import { saveImage } from "../../utils/utils";
+
 
 const Register = () => {
   const {createUser,signInWithGoogle,updateUserProfile} = useAuth()
-  const [isFocused, setIsFocused] = useState(false);
+  const [whichPhotoSelected, setWhichPhotoSelected] = useState(null);
   const navigate = useNavigate();
+
+
+  const {handleSubmit, register, formState: {errors}} = useForm()
 
   // for false the page load
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const name = form.name.value;
-    const email = form.email.value;
-    const password = form.password.value;
-    const photo = form["photo-url"].value;
+  const onSubmit = async (data) => {
+    const {name,email,password,photo} = data;
 
-    if (password.length < 6) {
-      toast.error("Password should at least 6 characters");
-      return;
-    }
-    if (!/(?=.*?[A-Z])/.test(password)) {
-      toast.error("Password should at least one capital letter");
-      return;
-    }
-    if (!/(?=.*?[#?!@$%^&*-])/.test(password)) {
-      toast.error("Password should at least one special character");
-      return;
-    }
+    // get the photo display_url after uploading image on imgbb 
+    const image = photo[0]
+    const result = await saveImage(image)
+    const imageUrl =  result?.data?.display_url;
 
     // create user
     try{
       const result = await createUser(email, password)
       // update user profile 
-      await updateUserProfile(name,photo)
+      await updateUserProfile(name,imageUrl)
       console.log(result?.user);
       
       if(result?.user?.email){
@@ -51,7 +46,7 @@ const Register = () => {
       // toast.error(err.message.split(" ")[2].split("/")[1].slice(0, -2));
     }
 
-    console.log(name, email, photo, password);
+    // console.log(data,image);
   };
 
   const handleGoogleLogin = async () => {
@@ -92,7 +87,7 @@ const Register = () => {
           <span className="border w-[100px] h-[5px] bg-action-bg"></span>
         </div>
 
-        <form onSubmit={handleRegister}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
             {/* user name  */}
             <div className="flex flex-col">
@@ -104,12 +99,12 @@ const Register = () => {
               </label>
               <input
                 type="text"
-                name="name"
+                {...register("name", {required:"Please provide your name"})}
                 id="name"
                 placeholder="Your Name"
-                required
                 className=" outline-none border placeholder-black px-3 py-4 rounded-md"
               />
+              {errors.name && <span className="text-red-500 font-medium">{errors.name.message}</span>}
             </div>
             {/* user email  */}
             <div className="flex flex-col">
@@ -121,12 +116,12 @@ const Register = () => {
               </label>
               <input
                 type="email"
-                name="email"
+                {...register("email",{required:"Please provide your email"})}
                 id="email"
                 placeholder="Your Email"
-                required
                 className=" outline-none border placeholder-black px-3 py-4 rounded-md"
               />
+              {errors.email && <span className="text-red-500 font-medium">{errors.email.message}</span>}
             </div>
             {/* user password  */}
             <div className="flex flex-col">
@@ -138,38 +133,53 @@ const Register = () => {
               </label>
               <input
                 type="password"
-                name="password"
+                {...register("password",{required:"Please provide your password",minLength:{
+                  value:6,
+                  message:"Password should be at least 6 characters"
+                },pattern:{
+                  value: /^(?=.*?[A-Z])(?=.*?[#?!@$%^&*-])/,
+                  message:"Password should contain at least one capital letter and one special character"
+                }})}
                 id="password"
                 placeholder="Your Password"
-                required
-                onFocus={() => setIsFocused(true)}
-                // onChange={(e) => setPassword(e.target.value)}
                 className=" outline-none border placeholder-black px-3 py-4 rounded-md"
               />
-              {isFocused && (
-                <p className="text-green-500">
-                  Password should at least 6 characters, at least one capital
-                  letter and at least one special character
-                </p>
-              )}
+              {errors.password && <span className="text-red-500 font-medium">{errors.password.message}</span>}
             </div>
             {/* user photo url  */}
-            <div className="flex flex-col">
-              <label
-                htmlFor="photo-url"
-                className="text-lg text-black-text font-semibold "
-              >
-                Your Photo Url
-              </label>
+            <div className="flex justify-center w-full">
+            <label
+              title={whichPhotoSelected}
+              htmlFor="photo"
+              className="flex gap-2 justify-center items-center px-2 w-full border-dotted border-[3px] border-blue-500/25 py-1"
+            >
+              {/* if photo selected then showing photo name or showing Profile Photo */}
+              <span className="font-semibold">
+                {whichPhotoSelected
+                  ? whichPhotoSelected.length > 25
+                    ? whichPhotoSelected.slice(0, 25)
+                    : whichPhotoSelected
+                  : "Profile Photo"}
+              </span>
+              {/* if photo selected then showing refresh icon or showing camera icon  */}
+              {whichPhotoSelected ? (
+                <IoMdRefresh size={30} className="text-text-color-blue" />
+              ) : (
+                <FaCamera size={30} className="text-text-color-blue" />
+              )}
               <input
-                type="url"
-                name="photo-url"
-                id="photo-url"
-                placeholder="Your Photo Url"
-                required
-                className=" outline-none border placeholder-black px-3 py-4 rounded-md"
+                onInput={(e) =>
+                  setWhichPhotoSelected(e.target?.files[0]?.name)
+                }
+                {...register("photo",{required:"Please upload your photo"})}
+                id="photo"
+                className="appearance-none absolute -top-[1000px] bg-transparent border-none text-gray-700 mr-3 leading-tight focus:outline-none"
+                type="file"
+                accept="image/*"
               />
-            </div>
+              {errors.photo && <span className="text-red-500 font-medium">{errors.photo.message}</span>}
+            </label>
+          </div>
             {/* register button  */}
             <div className="text-center py-7">
               <button

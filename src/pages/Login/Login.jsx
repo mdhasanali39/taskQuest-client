@@ -4,16 +4,15 @@ import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { accessToken } from "../../api/auth";
+import  {useForm} from 'react-hook-form'
 
 const Login = () => {
     const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+  const {handleSubmit, register, formState: {errors}} = useForm()
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const email = form.email.value;
-    const password = form.password.value;
+  const onSubmit = (data) => {
+    const {email, password} = data;
     
     // create user
     signIn(email, password)
@@ -26,13 +25,10 @@ const Login = () => {
       })
       .catch((err) => {
         console.log(err);
-        if (
-          err.message === "Firebase: Error (auth/invalid-login-credentials)."
-        ) {
-          toast.error("email or password does not matched");
-          
+        if (err.code === "auth/invalid-credential") {
+          toast.error("Invalid email or password");  
         }
-        toast.error(err.message.split(" ")[2].split("/")[1].slice(0, -2));
+        toast.error("An error occurred during login");
       });
   };
 
@@ -75,7 +71,7 @@ const Login = () => {
           <span className="border w-[100px] h-[5px] bg-action-bg"></span>
         </div>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
             {/* user email  */}
             <div className="flex flex-col">
@@ -87,12 +83,12 @@ const Login = () => {
               </label>
               <input
                 type="email"
-                name="email"
+                {...register('email', {required:"Please provide your Email"})}
                 id="email"
                 placeholder="Your Email"
-                required
                 className=" outline-none border placeholder-black px-3 py-4 rounded-md"
               />
+              {errors.email && <span className="text-red-500 font-medium">{errors.email.message}</span>}
             </div>
             {/* user password  */}
             <div className="flex flex-col">
@@ -104,12 +100,12 @@ const Login = () => {
               </label>
               <input
                 type="password"
-                name="password"
+                {...register("password", {required:"Please provide correct password"})}
                 id="password"
                 placeholder="Your Password"
-                required
                 className=" outline-none border placeholder-black px-3 py-4 rounded-md"
               />
+              {errors.password && <span className="text-red-500 font-medium">{errors.password.message}</span>}
             </div>
             {/* login button  */}
             <div className="text-center py-7">

@@ -37,7 +37,7 @@ const CreateTask = ({ setIsAddIconClicked,refetch }) => {
   };
 
   return (
-    <div className=" w-3/4 lg:w-1/4 bg-white mt-1 p-4 pt-12 fixed z-[100] shadow-xl rounded-lg border-t-[5px] border-t-action-text left-1/2 -translate-x-1/2 bottom-1/2 translate-y-1/2">
+    <div className=" w-3/4 lg:w-1/4 bg-white mt-1 p-4 pt-12 fixed z-[900] shadow-xl rounded-lg border-t-[5px] border-t-action-text left-1/2 -translate-x-1/2 bottom-1/2 translate-y-1/2">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
         {/* task name  */}
         <input

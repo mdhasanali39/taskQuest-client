@@ -9,119 +9,106 @@ const TaskManagement = () => {
   const [currentPageTodo, setCurrentPageTodo] = useState(1);
   const [currentPageOngoing, setCurrentPageOngoing] = useState(1);
   const [currentPageCompleted, setCurrentPageCompleted] = useState(1);
-  // const [currentPage,setCurrentPage] = useState(1)
   const [taskStatus, setTaskStatus] = useState("all");
   const pageSize = 3;
-  const { user,isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
 
-  // console.log(taskStatus);
-
-  const {
-    data: todoTasks = [],
-    refetch: refetchTodo,
-    isLoading: isTodoLoading,
-  } = useQuery({
+  // handle page changed 
+  const handlePageChange = (status, page) => {
+    switch (status) {
+      case "todo":
+        setCurrentPageTodo(page);
+        setCurrentPageOngoing(1);
+        setCurrentPageCompleted(1);
+        break;
+      case "ongoing":
+        setCurrentPageOngoing(page);
+        setCurrentPageTodo(1);
+        setCurrentPageCompleted(1);
+        break;
+      case "completed":
+        setCurrentPageCompleted(page);
+        setCurrentPageTodo(1);
+        setCurrentPageOngoing(1);
+        break;
+      default:
+        break;
+    }
+  };
+// render task cards 
+  const renderTaskCard = (sectionName, sectionTasks, sectionTotalTasks, refetch, currentPage, setCurrentPage, sectionStatus) => {
+    return (
+      <TaskCard
+        sectionName={sectionName}
+        isCreateTask={sectionStatus === 'todo'?true:false}
+        tasks={sectionTasks}
+        totalTasks={sectionTotalTasks}
+        refetch={refetch}
+        pageSize={pageSize}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        handlePageChange={handlePageChange}
+        taskStatus={sectionStatus}
+        setTaskStatus={setTaskStatus}
+      />
+    );
+  };
+// fetching tasks 
+  const { data: todoTasks = [], refetch: refetchTodo, isLoading: isTodoLoading } = useQuery({
     enabled: !isLoading && !!user?.email,
-    queryKey: ["tasks", currentPageTodo,user?.email, taskStatus],
+    queryKey: ["tasks", currentPageTodo, user?.email, taskStatus],
     queryFn: async () => {
       const data = await getTasks(user?.email, currentPageTodo, pageSize, taskStatus);
       return data;
     },
   });
-  const {
-    data: ongoingTasks = [],
-    refetch: refetchOngoing,
-    isLoading: isOngoingLoading,
-  } = useQuery({
-    queryKey: ["tasks", currentPageOngoing,user?.email, taskStatus],
+
+  const { data: ongoingTasks = [], refetch: refetchOngoing, isLoading: isOngoingLoading } = useQuery({
+    queryKey: ["tasks", currentPageOngoing, user?.email, taskStatus],
     queryFn: async () => {
-      const data = await getTasks(
-        user?.email,
-        currentPageOngoing,
-        pageSize,
-        taskStatus
-      );
-      return data;
-    },
-  });
-  const {
-    data: completedTasks = [],
-    refetch: refetchCompleted,
-    isLoading: isCompletedLoading,
-  } = useQuery({
-    queryKey: ["tasks", currentPageCompleted,user?.email, taskStatus],
-    queryFn: async () => {
-      const data = await getTasks(
-        user?.email,
-        currentPageCompleted,
-        pageSize,
-        taskStatus
-      );
+      const data = await getTasks(user?.email, currentPageOngoing, pageSize, taskStatus);
       return data;
     },
   });
 
-  return (
-    <div className="min-h-[86vh]">
-      {isTodoLoading || isOngoingLoading || isCompletedLoading ? (
-        <div className="min-h-[86vh] flex justify-center items-center">
-          <span className="">
-            {" "}
-            <Grid
-              visible={true}
-              height="80"
-              width="80"
-              color="#3b82f6"
-              ariaLabel="grid-loading"
-              radius="12.5"
-              wrapperStyle={{}}
-              wrapperClass="grid-wrapper"
-            />
-          </span>
-        </div>
-      ) : (
-        <div className="relative w-full grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-4">
-          {/* todo lists  */}
-          <TaskCard
-            sectionName="Todo"
-            isCreateTask={true}
-            tasks={todoTasks?.todo}
-            totalTasks={todoTasks?.totalTodoTasks}
-            refetch={refetchTodo}
-            pageSize={pageSize}
-            currentPage={currentPageTodo}
-            setCurrentPage={setCurrentPageTodo}
-            taskStatus="todo"
-            setTaskStatus={setTaskStatus}
-          />
-          {/* onGoing lists  */}
-          <TaskCard
-            sectionName="OnGoing"
-            tasks={ongoingTasks?.ongoing}
-            totalTasks={ongoingTasks?.totalOngoingTasks}
-            refetch={refetchOngoing}
-            pageSize={pageSize}
-            currentPage={currentPageOngoing}
-            setCurrentPage={setCurrentPageOngoing}
-            taskStatus="ongoing"
-            setTaskStatus={setTaskStatus}
-          />
-          {/* completed lists  */}
-          <TaskCard
-            sectionName="Completed"
-            tasks={completedTasks?.completed}
-            totalTasks={completedTasks?.totalCompletedTasks}
-            refetch={refetchCompleted}
-            pageSize={pageSize}
-            currentPage={currentPageCompleted}
-            setCurrentPage={setCurrentPageCompleted}
-            taskStatus="completed"
-            setTaskStatus={setTaskStatus}
-          />
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default TaskManagement;
+  const { data: completedTasks = [], refetch: refetchCompleted
+    , isLoading: isCompletedLoading } = useQuery({
+      queryKey: ["tasks", currentPageCompleted, user?.email, taskStatus],
+      queryFn: async () => {
+        const data = await getTasks(user?.email, currentPageCompleted, pageSize, taskStatus);
+        return data;
+      },
+    });
+  
+    return (
+      <div className="min-h-[86vh]">
+        {isTodoLoading || isOngoingLoading || isCompletedLoading ? (
+          <div className="min-h-[86vh] flex justify-center items-center">
+            <span className="">
+              {" "}
+              <Grid
+                visible={true}
+                height="80"
+                width="80"
+                color="#3b82f6"
+                ariaLabel="grid-loading"
+                radius="12.5"
+                wrapperStyle={{}}
+                wrapperClass="grid-wrapper"
+              />
+            </span>
+          </div>
+        ) : (
+          <div className="relative w-full grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-4">
+            {/* Render TaskCards for each section */}
+            {renderTaskCard("Todo", todoTasks?.todo, todoTasks?.totalTodoTasks, refetchTodo, currentPageTodo, setCurrentPageTodo, "todo")}
+            {renderTaskCard("OnGoing", ongoingTasks?.ongoing, ongoingTasks?.totalOngoingTasks, refetchOngoing, currentPageOngoing, setCurrentPageOngoing, "ongoing")}
+            {renderTaskCard("Completed", completedTasks?.completed, completedTasks?.totalCompletedTasks, refetchCompleted, currentPageCompleted, setCurrentPageCompleted, "completed")}
+          </div>
+        )}
+      </div>
+    );
+  };
+  
+  export default TaskManagement;
+  

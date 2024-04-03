@@ -18,7 +18,6 @@ const Task = ({ id, taskName, taskDescription, taskPriority, status,taskDeadline
       const result = await updateTaskStatus(id,{status:"ongoing"})
       if(result?.status){
         toast.success(`Status has changed to ongoing`)
-        console.log(refetch)
         refetch()
       }
     } catch (err) {

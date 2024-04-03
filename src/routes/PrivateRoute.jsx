@@ -1,10 +1,12 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import PropTypes from 'prop-types'
 import {Grid} from 'react-loader-spinner'
 
 const PrivateRoute = ({children}) => {
     const {user, isLoading} = useAuth()
+
+    const location = useLocation()
 
     if(isLoading){
         return <div className="min-h-[86vh] flex justify-center items-center"><span className=""> <Grid
@@ -19,7 +21,7 @@ const PrivateRoute = ({children}) => {
         /></span></div>
     }
     if(!user){
-       return <Navigate to="/login" replace={true}/>
+       return <Navigate to="/login" state={{from:location}} replace={true}/>
     }
 
     return children;

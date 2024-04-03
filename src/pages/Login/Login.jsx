@@ -42,7 +42,7 @@ const Login = () => {
       if (result?.user?.email) {
         await accessToken(result?.user?.email)
         toast.success("Login with google Successful");
-        navigate("/", { replace: true });
+        navigate(from,{replace:true});
       }
     } catch (err) {
       console.error(err.message);

@@ -1,7 +1,7 @@
 import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { accessToken } from "../../api/auth";
 import  {useForm} from 'react-hook-form'
@@ -14,6 +14,8 @@ const Register = () => {
   const {createUser,signInWithGoogle,updateUserProfile} = useAuth()
   const [whichPhotoSelected, setWhichPhotoSelected] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation()
+  const from = location?.state?.from?.pathname || '/'
 
 
   const {handleSubmit, register, formState: {errors}} = useForm()
@@ -55,7 +57,7 @@ const Register = () => {
       if(result?.user?.email){
         await accessToken(result?.user?.email)
         toast.success("Login with google Successful")
-        navigate('/', {replace:true})
+        navigate(from,{replace:true});
       }
     } catch (err) {
       console.log(err.message)

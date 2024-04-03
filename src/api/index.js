@@ -13,7 +13,7 @@ axiosSecure.interceptors.response.use(
     return res;
   },
   async (err) => {
-    console.log("error in interceptors", err);
+    // console.log("error in interceptors", err);
     if (
       err.response &&
       (err.response.status === 401 || err.response.status === 403)

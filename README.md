@@ -4,7 +4,6 @@
 ### Thank you for visiting, now I want to provide instructions for how you can run this web app locally.
 
 ## #Way number one:
-
 ### You need to clone of my task quest client and task quest server.
 #### Clone client:
 ```
@@ -14,6 +13,7 @@ git clone https://github.com/mdhasanali39/taskQuest-client.git
 ```
 git clone https://github.com/mdhasanali39/taskQuest-server.git
 ```
+### Navigate to the "frontend" & "back-end" root directory.
 ### run command npm i for client and server
 ``` 
 npm i
@@ -29,6 +29,7 @@ VITE_STORAGEBUCKET=your storagebucket
 VITE_MESSAGINGSENDERID=your messaging sender id
 VITE_APPID=your app id
 ```
+### Above VITE_APIKEY value must be quoted
 ### Another for axiosSecure:
 ```
 VITE_API_BASE_URL="http://localhost:5000"

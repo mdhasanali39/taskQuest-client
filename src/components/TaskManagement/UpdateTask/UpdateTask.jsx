@@ -41,7 +41,6 @@ const UpdateTask = ({
           placeholder="Task Name"
           {...register("taskName", { required: true })}
           defaultValue={taskName}
-          required
           className="px-2 py-2 outline-none border rounded-md"
         />
         {/* errors will return when field validation fails  */}
@@ -56,7 +55,6 @@ const UpdateTask = ({
           type="date"
           {...register("taskDeadline", { required: true })}
           defaultValue={taskDeadline}
-          required
           className="px-2 py-2 outline-none border rounded-md"
         />
         {/* errors will return when field validation fails  */}
@@ -74,6 +72,9 @@ const UpdateTask = ({
           <option value="moderate">Moderate</option>
           <option value="low">Low</option>
         </select>
+        {errors.taskDeadline && (
+          <span className="text-red-500 font-medium">Please select date</span>
+        )}
         {/* task description */}
         <textarea
           type="text"
